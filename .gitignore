@@ -15,7 +15,9 @@ Desktop.ini
 .env
 .env.*
 !.env.example
+!php/.env.example
 *.local
+php/app/protected/config/*.local.php
 
 # Dependencies
 vendor/
@@ -59,15 +61,4 @@ coverage/
 
 # Generated project output
 vibecoding/generated/
-
-# Large media: keep videos out of Git
-*.avi
-*.flv
-*.m4v
-*.mkv
-*.mov
-*.mp4
-*.mpeg
-*.mpg
-*.webm
-*.wmv
+/php/.phpunit.result.cache
