@@ -7,6 +7,7 @@
  * @property string $status Comment status: active or deleted.
  * @property string $created_at Creation datetime.
  * @property string|null $updated_at Last update datetime.
+ * @method Comment active()
  */
 class Comment extends CActiveRecord
 {

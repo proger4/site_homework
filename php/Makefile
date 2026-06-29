@@ -1,4 +1,4 @@
-.PHONY: up down logs ps build smoke test migrate admin-user seed shell config
+.PHONY: up down logs ps build smoke test phpstan qa migrate admin-user seed shell config
 
 up:
 	docker compose up -d --build
@@ -37,3 +37,9 @@ smoke:
 
 test:
 	composer test
+
+phpstan:
+	composer phpstan
+
+qa:
+	composer qa
