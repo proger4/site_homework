@@ -1,0 +1,16 @@
+parameters:
+    level: 3
+    paths:
+        - app/protected/commands
+        - app/protected/components
+        - app/protected/controllers
+        - app/protected/migrations
+        - app/protected/models
+        - tests
+    bootstrapFiles:
+        - vendor/yiisoft/yii/framework/yii.php
+    stubFiles:
+        - phpstan-stubs/yii-app.stub
+    parallel:
+        maximumNumberOfProcesses: 1
+    tmpDir: var/phpstan
