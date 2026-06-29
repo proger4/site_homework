@@ -65,7 +65,7 @@ Here is the repository with the Yii1 commenting system:
 <repo-url>
 
 Run:
-cd php
+cd system/php
 docker compose up --build
 
 URLs:

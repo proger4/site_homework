@@ -4,6 +4,14 @@ Runnable Yii1 comment system with Docker, SQLite, migrations, admin moderation, 
 
 ## Start
 
+From repository root:
+
+```bash
+cd system/php
+```
+
+Then:
+
 ```bash
 cp .env.example .env
 make up

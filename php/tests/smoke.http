@@ -15,3 +15,21 @@ LoginForm[username]=admin&LoginForm[password]=admin123
 
 ### Admin comments
 GET http://localhost:8080/admin/comments
+
+### Reject empty comment message
+# Expected: 200 OK with "Message cannot be blank."
+POST http://localhost:8080/comment/create
+Content-Type: application/x-www-form-urlencoded
+
+Comment[name]=Smoke&Comment[message]=
+
+### Reject invalid admin login
+# Expected: 200 OK with "Incorrect login or password."
+POST http://localhost:8080/admin/login
+Content-Type: application/x-www-form-urlencoded
+
+LoginForm[username]=admin&LoginForm[password]=wrong-password
+
+### Redirect guest away from admin comments
+# Expected: 302 Found with Location: /admin/login
+GET http://localhost:8080/admin/comments

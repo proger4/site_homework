@@ -4,8 +4,8 @@
 
 #### Готово как рабочий результат
 
-- `vibecoding/` — рабочая Yii2 marketing automation платформа. Makefile унифицирован с `php/`: запуск через ``make up``, есть README.md.
-- `php/` — runnable Yii1-приложение. Все запускается из коробки на Makefile как ``make up`` через Docker, есть README.md.
+- `system/vibecoding/` — рабочая Yii2 marketing automation платформа. Makefile унифицирован с `system/php/`: запуск через ``make up``, есть README.md.
+- `system/php/` — runnable Yii1-приложение. Все запускается из коробки на Makefile как ``make up`` через Docker, есть README.md.
 - `homework/charting/` — готовая статическая страница `index.html` с 4 in-page views, KPI dashboard и Mixpanel events; рядом лежат `solution.md` и декомпозиция ИИ `decomposition.md`.
 - `homework/illustrator/` — готовый HTML-макет `orders-upgrades.html`, исходная картинка `img.png`, ссылка на Figma в `solution.md`, декомпозиция ИИ `decomposition.md`.
 - `homework/math/` — готовый расчет и финальный ответ в `solution.md`, декомпозиция ИИ `decomposition.md`.
@@ -35,6 +35,7 @@
 - https://disk.yandex.ru/i/hSAKS1fkwtqL4w
 - https://disk.yandex.ru/i/dKN5kognymzDgw
 - https://disk.yandex.ru/i/sk49ttPsRyIKnA
+- полировка проекта PHP: https://disk.yandex.ru/i/9ZSzNgd-9Kp1yg
 
 По секции #growth понял, что мне надо ботать матчасть про стартапы и метрики конкретно ...
 

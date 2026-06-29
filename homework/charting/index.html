@@ -7,7 +7,52 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"></script>
+  <script>
+    (function (documentRef, mixpanelRef) {
+      if (mixpanelRef.__SV) return;
+      window.mixpanel = mixpanelRef;
+      mixpanelRef._i = [];
+      mixpanelRef.init = function (token, config, name) {
+        function addStub(target, methodPath) {
+          const parts = methodPath.split(".");
+          if (parts.length === 2) {
+            target = target[parts[0]];
+            methodPath = parts[1];
+          }
+          target[methodPath] = function () {
+            target.push([methodPath].concat(Array.prototype.slice.call(arguments, 0)));
+          };
+        }
+
+        let instance = mixpanelRef;
+        if (typeof name !== "undefined") {
+          instance = mixpanelRef[name] = [];
+        } else {
+          name = "mixpanel";
+        }
+        instance.people = instance.people || [];
+        instance.toString = function (isPeople) {
+          let label = "mixpanel";
+          if (name !== "mixpanel") label += "." + name;
+          if (!isPeople) label += " (stub)";
+          return label;
+        };
+        instance.people.toString = function () {
+          return instance.toString(1) + ".people (stub)";
+        };
+        const methods = "disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");
+        for (let index = 0; index < methods.length; index += 1) addStub(instance, methods[index]);
+        mixpanelRef._i.push([token, config, name]);
+      };
+      mixpanelRef.__SV = 1.2;
+      const script = documentRef.createElement("script");
+      script.type = "text/javascript";
+      script.async = true;
+      script.src = "https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";
+      const firstScript = documentRef.getElementsByTagName("script")[0];
+      firstScript.parentNode.insertBefore(script, firstScript);
+    })(document, window.mixpanel || []);
+  </script>
   <style>
     :root {
       --text: #35363a;
@@ -94,6 +139,32 @@
     }
 
     .nav-link.is-active::after {
+      content: "";
+      position: absolute;
+      left: -20px;
+      right: -20px;
+      bottom: 0;
+      height: 4px;
+      background: var(--blue);
+    }
+
+    .visual-tabs {
+      color: var(--muted);
+    }
+
+    .visual-tab {
+      position: relative;
+      padding: 0 0 20px;
+      color: var(--text);
+      font-size: 27px;
+      line-height: 32px;
+    }
+
+    .visual-tab.is-active {
+      color: var(--blue);
+    }
+
+    .visual-tab.is-active::after {
       content: "";
       position: absolute;
       left: -20px;
@@ -519,7 +590,8 @@
     }
 
     @media (max-width: 640px) {
-      .nav-link {
+      .nav-link,
+      .visual-tab {
         font-size: 22px;
         line-height: 28px;
       }
@@ -557,16 +629,17 @@
 <body>
   <main class="app-shell">
     <nav class="top-nav" aria-label="Main navigation">
-      <button class="nav-link is-active" type="button" data-nav="title" data-button-id="nav_title" data-button-position="top">Dashboard</button>
-      <button class="nav-link" type="button" data-nav="portfolio" data-button-id="nav_portfolio" data-button-position="top">Orders</button>
-      <button class="nav-link" type="button" data-nav="contact" data-button-id="nav_contact" data-button-position="top">Accounts</button>
+      <button class="nav-link is-active" type="button" data-page-nav data-nav="title" data-button-id="nav_title" data-button-position="top">1. Title</button>
+      <button class="nav-link" type="button" data-page-nav data-nav="portfolio" data-button-id="nav_portfolio" data-button-position="top">2. Portfolio</button>
+      <button class="nav-link" type="button" data-page-nav data-nav="process" data-button-id="nav_kpi" data-button-position="top">3. KPI dashboard</button>
+      <button class="nav-link" type="button" data-page-nav data-nav="contact" data-button-id="nav_contact" data-button-position="top">4. Contact</button>
     </nav>
 
-    <nav class="sub-nav" aria-label="Orders navigation">
-      <button class="nav-link" type="button" data-nav="title" data-button-id="nav_hostings" data-button-position="sub">Hostings</button>
-      <button class="nav-link" type="button" data-nav="portfolio" data-button-id="nav_websites" data-button-position="sub">Websites</button>
-      <button class="nav-link is-active" type="button" data-nav="process" data-button-id="nav_upgrades" data-button-position="sub">Upgrades</button>
-      <button class="nav-link" type="button" data-nav="contact" data-button-id="nav_domains" data-button-position="sub">Domains</button>
+    <nav class="sub-nav visual-tabs" aria-label="Figma visual tabs placeholder">
+      <span class="visual-tab">Hostings</span>
+      <span class="visual-tab">Websites</span>
+      <span class="visual-tab is-active">Upgrades</span>
+      <span class="visual-tab">Domains</span>
     </nav>
 
     <section class="view is-active" id="view-title" data-page-title="Title page">
@@ -877,7 +950,7 @@
         view.classList.toggle("is-active", view.id === "view-" + nextPage);
       });
 
-      document.querySelectorAll("[data-nav]").forEach((button) => {
+      document.querySelectorAll("[data-page-nav]").forEach((button) => {
         button.classList.toggle("is-active", button.dataset.nav === nextPage);
       });
 
