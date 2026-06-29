@@ -15,6 +15,11 @@ return [
     'basePath' => $root,
     'runtimePath' => $root . '/runtime',
     'vendorPath' => $root . '/vendor',
+    'aliases' => [
+        '@App' => $root . '/src',
+        '@webroot' => $root . '/public',
+        '@web' => '',
+    ],
     'controllerNamespace' => 'App\\Controller',
     'components' => [
         'request' => [

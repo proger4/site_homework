@@ -5,11 +5,16 @@ declare(strict_types=1);
 use App\KeywordStorage\SqliteKeywordStorage;
 use App\User\AdminUserRepository;
 
+$root = dirname(__DIR__);
+
 return [
     'id' => 'vibecoding-keywords-console',
-    'basePath' => dirname(__DIR__),
-    'runtimePath' => dirname(__DIR__) . '/runtime',
-    'vendorPath' => dirname(__DIR__) . '/vendor',
+    'basePath' => $root,
+    'runtimePath' => $root . '/runtime',
+    'vendorPath' => $root . '/vendor',
+    'aliases' => [
+        '@App' => $root . '/src',
+    ],
     'controllerNamespace' => 'App\\Command',
     'components' => [
         'db' => [

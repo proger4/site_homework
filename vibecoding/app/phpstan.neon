@@ -3,8 +3,8 @@ parameters:
     paths:
         - src
         - tests
-    stubFiles:
-        - phpstan-yii.stub
+    bootstrapFiles:
+        - vendor/yiisoft/yii2/Yii.php
     parallel:
         maximumNumberOfProcesses: 1
     tmpDir: var/phpstan

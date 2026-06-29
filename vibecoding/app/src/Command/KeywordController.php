@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\KeywordExport\GoogleAdsExportValidator;
 use App\KeywordRuntime\KeywordRuntime;
+use App\User\AdminUserRepository;
 use Yii;
 use yii\console\Controller;
 
@@ -15,7 +16,11 @@ final class KeywordController extends Controller
     {
         $runtime = $this->runtime();
         $runtime->storage()->initialize();
-        Yii::$app->adminUsers->ensureDefaultUser();
+        $adminUsers = Yii::$app->get('adminUsers');
+
+        if ($adminUsers instanceof AdminUserRepository) {
+            $adminUsers->ensureDefaultUser();
+        }
 
         $this->stdout('SQLite database ready: ' . $runtime->storage()::defaultDsn() . PHP_EOL);
         $this->stdout('Rows stored: ' . $runtime->storage()->rowCount() . PHP_EOL);

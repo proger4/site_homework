@@ -21,7 +21,11 @@ final class AdminIdentity implements IdentityInterface
 
     public static function findIdentity($id): ?self
     {
-        return \Yii::$app->adminUsers->findIdentityById((int) $id);
+        $adminUsers = \Yii::$app->get('adminUsers');
+
+        return $adminUsers instanceof AdminUserRepository
+            ? $adminUsers->findIdentityById((int) $id)
+            : null;
     }
 
     public static function findIdentityByAccessToken($token, $type = null): ?self

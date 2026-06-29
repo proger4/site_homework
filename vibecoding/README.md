@@ -1,18 +1,23 @@
 # Vibecoding
 
-Workspace for the `#vibecoding` task: keyword fixtures and a runnable Dockerized keyword import/export/ad-copy app.
+Dockerized Yii2 keyword import/export/ad-copy MVP for the `#vibecoding` task.
 
-## Contents
+## URLs And Access
 
-- `app/tests/fixtures/keyword-samples/` — Google Ads, Search Console, and Ahrefs fixture exports used by the keyword commands.
-- `app/` — minimal Yii2-oriented keyword import/export shell plus a small HTTP status surface with SQLite persistence.
-- `docker-compose.yml` — local PHP runtime with SQLite and an exposed HTTP port, mirroring the environment flow used in `../php`.
-- `IDEAS.md` — implementation direction.
-- `../homework/vibecoding/` — decomposition and source material.
+After `make up`:
 
-## Commands
+- App: http://127.0.0.1:8080
+- Health: http://127.0.0.1:8080/health
+- Login: http://127.0.0.1:8080/login
+- Upload/import: http://127.0.0.1:8080/upload
+- Admin: http://127.0.0.1:8080/admin/keywords
+- Preview: http://127.0.0.1:8080/preview
+- AI fallback preview: http://127.0.0.1:8080/ai-preview?mode=template
+- Export CSV: http://127.0.0.1:8080/export
 
-Docker start:
+Default local access is `admin` / `admin123`. Override it in `.env` with `ADMIN_LOGIN` and `ADMIN_PASSWORD`.
+
+## Quick Start
 
 ```bash
 cp .env.example .env
@@ -20,59 +25,67 @@ make up
 make smoke-docker
 ```
 
-Open: http://0.0.0.0:8080
-Health: http://0.0.0.0:8080/health
-AI preview: http://0.0.0.0:8080/ai-preview
-Fast offline AI fallback preview: http://0.0.0.0:8080/ai-preview?mode=template
+`make up` builds the PHP 8.3 image, initializes `database/app.sqlite`, ensures the admin user, imports the bundled keyword fixtures, and starts PHP's built-in web server on `VIBECODING_PORT` (`8080` by default).
 
-`make up` builds the PHP image, initializes `database/app.sqlite`, imports the keyword fixtures into SQLite, and starts PHP's built-in web server on `VIBECODING_PORT` (`8080` by default). The same port is used inside and outside Docker.
-
-The default SQLite database is `database/app.sqlite`; override it through `DB_DSN`, `DB_USERNAME`, and `DB_PASSWORD`.
-AI works out of the box through deterministic template fallback. To use real OpenRouter generation, put `OPENROUTER_API_KEY` and `OPENROUTER_MODEL` into `.env`, then run `make up` again. The same configuration is used by the web `/ai-preview` page and the CLI preview command. For a fast offline web check, use `/ai-preview?mode=template`.
+## QA Commands
 
 ```bash
-make ai-preview
-make ai-preview-docker
-cd app && php yii keyword/ai-preview --apiKey=sk-or-... --model=openai/gpt-4.1-mini
-```
-
-Without an OpenRouter key the app uses deterministic template ad copy, so web preview, export, and smoke still work offline.
-
-Keyword import/export shell on the host:
-
-```bash
-make db-init
-make import-samples
-make export-samples
-make ai-preview
-make ai-preview-docker
-make test
+make composer-validate
+make qa
 make smoke
 make smoke-docker
 make validate-export
 ```
 
-The app can also be called directly:
+Expected results:
 
-```bash
-cd app
-php yii keyword/import-samples
-php yii keyword/export-samples
-php yii keyword/ai-preview
-php yii keyword/smoke
+- `make composer-validate`: `./composer.json is valid`.
+- `make qa`: strict Composer validation, PHPStan, unit tests, CLI smoke, export validation, and security checklist pass.
+- `make smoke`: imports 8 sample rows, exports 4 Google Ads rows, prints `Smoke passed.`
+- `make smoke-docker`: checks health, login, upload/import page, admin table, preview, template AI fallback, CSV export, and container CLI smoke.
+- `make validate-export`: prints `Export looks valid.`
+
+`composer qa` inside `app/` runs the same local QA chain as `make qa`.
+
+## Smoke Scenario
+
+1. Upload/import: log in and open `/upload`; use "Import bundled sample files" or upload a CSV/JSON fixture.
+2. Admin: open `/admin/keywords`; verify rows, `status`, `normalized_keyword`, and `removal_reason`.
+3. Preview: open `/preview`; verify future Google Ads CSV rows before download.
+4. AI fallback: open `/ai-preview?mode=template`; it must work without an OpenRouter key.
+5. Export: open `/export` or run `make export-samples`; the CSV is written to `app/runtime/export/google_ads_import.csv`.
+
+## AI And Secrets
+
+OpenRouter is optional. Without `OPENROUTER_API_KEY`, the app uses deterministic template fallback for web preview, export, and smoke.
+
+To enable real OpenRouter calls, put the key in `.env`:
+
+```dotenv
+OPENROUTER_API_KEY=
+OPENROUTER_MODEL=openai/gpt-4.1-mini
 ```
 
-The default export is written to `app/runtime/export/google_ads_import.csv`.
+Do not pass real keys inline in shared commands. `composer qa:security` checks for real-looking OpenRouter keys in source/config/docs/tests and scans generated database/export/log artifacts for the configured key. The app must not render or export the key in HTML, SQLite, logs, or CSV.
+
+## Useful Commands
 
 ```bash
-make up
-make down
+make app-install
+make db-init
+make user-ensure
+make import-samples
+make export-samples
+make ai-preview
+make ai-preview-docker
+make test
+make phpstan
+make qa-security
 make logs
 make ps
-make build
-make config
-make shell
+make down
 ```
 
-`make validate-export` is pure PHP and validates the generated Google Ads CSV columns and text lengths.
-`make test` runs unit/data-provider checks for the AI contracts and ad-copy generators without network calls.
+## File Size Rule
+
+`composer qa:security` enforces a 500-line limit for source/config/doc/test files. Generated and ignored directories are excluded: `.git`, `app/vendor`, `app/var`, `app/runtime`, `database`, and `generated`.

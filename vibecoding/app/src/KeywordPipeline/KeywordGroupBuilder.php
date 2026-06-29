@@ -142,7 +142,14 @@ final class KeywordGroupBuilder
             }
 
             $seen[$dedupeKey] = true;
-            $processed[] = ProcessedKeywordRow::active($normalizedRow);
+
+            $reviewReason = $this->reviewReason($normalizedRow);
+            $landingPageSuggestion = $this->landingPageSuggestion($normalizedRow);
+            $adGroupSuggestion = $this->adGroupSuggestion($normalizedRow);
+
+            $processed[] = $reviewReason === null
+                ? ProcessedKeywordRow::active($normalizedRow, $landingPageSuggestion, $adGroupSuggestion)
+                : ProcessedKeywordRow::review($normalizedRow, $reviewReason, $landingPageSuggestion, $adGroupSuggestion);
         }
 
         return $processed;
@@ -214,5 +221,72 @@ final class KeywordGroupBuilder
         }
 
         return false;
+    }
+
+    private function reviewReason(NormalizedKeywordRow $row): ?string
+    {
+        $keyword = $row->normalizedKeyword();
+
+        if (preg_match('/\b(free|cheap|download|template|templates)\b/u', $keyword) === 1) {
+            return 'review_possible_junk_intent';
+        }
+
+        if ($this->isWeakTargetUrl($row->targetUrl())) {
+            return 'review_weak_target_url';
+        }
+
+        return null;
+    }
+
+    private function landingPageSuggestion(NormalizedKeywordRow $row): ?string
+    {
+        if (!$this->isWeakTargetUrl($row->targetUrl())) {
+            return null;
+        }
+
+        if ($row->language() === 'lt') {
+            return 'https://site.pro/lt/';
+        }
+
+        if (strpos($row->normalizedKeyword(), 'white label') !== false) {
+            return 'https://site.pro/White-Label/';
+        }
+
+        if ($this->hasWord($row->normalizedKeyword(), 'ai')) {
+            return 'https://site.pro/AI-Website-Builder/';
+        }
+
+        return 'https://site.pro/Website-Builder/';
+    }
+
+    private function adGroupSuggestion(NormalizedKeywordRow $row): ?string
+    {
+        $keyword = $row->normalizedKeyword();
+
+        if (strpos($keyword, 'white label') !== false) {
+            return $row->language() . ' / white label';
+        }
+
+        if ($this->hasWord($keyword, 'ai')) {
+            return $row->language() . ' / ai website builder';
+        }
+
+        if (strpos($keyword, 'template') !== false || strpos($keyword, 'templates') !== false) {
+            return $row->language() . ' / templates';
+        }
+
+        return $row->language() . ' / website builder';
+    }
+
+    private function isWeakTargetUrl(string $targetUrl): bool
+    {
+        $path = trim((string) parse_url($targetUrl, PHP_URL_PATH), '/');
+
+        return $targetUrl === '' || $path === '';
+    }
+
+    private function hasWord(string $haystack, string $word): bool
+    {
+        return preg_match('/\b' . preg_quote($word, '/') . '\b/u', $haystack) === 1;
     }
 }

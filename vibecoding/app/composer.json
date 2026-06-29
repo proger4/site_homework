@@ -20,7 +20,7 @@
     "test": "php tests/run.php"
   },
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.3",
     "ext-curl": "*",
     "ext-json": "*",
     "ext-mbstring": "*",
@@ -46,7 +46,7 @@
     },
     "sort-packages": true,
     "platform": {
-      "php": "7.4.33"
+      "php": "8.3.31"
     },
     "allow-plugins": {
       "yiisoft/yii2-composer": true

@@ -72,6 +72,8 @@ final class SqliteKeywordStorage
                 normalized_keyword TEXT NOT NULL DEFAULT \'\',
                 status TEXT NOT NULL DEFAULT \'active\',
                 removal_reason TEXT,
+                landing_page_suggestion TEXT,
+                ad_group_suggestion TEXT,
                 imported_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             )'
         );
@@ -79,6 +81,8 @@ final class SqliteKeywordStorage
         $this->ensureColumn('normalized_keyword', 'TEXT NOT NULL DEFAULT \'\'');
         $this->ensureColumn('status', 'TEXT NOT NULL DEFAULT \'active\'');
         $this->ensureColumn('removal_reason', 'TEXT');
+        $this->ensureColumn('landing_page_suggestion', 'TEXT');
+        $this->ensureColumn('ad_group_suggestion', 'TEXT');
 
         $this->pdo->exec(
             'CREATE UNIQUE INDEX IF NOT EXISTS idx_keyword_import_rows_source_file_row
@@ -121,7 +125,9 @@ final class SqliteKeywordStorage
                     raw_payload,
                     normalized_keyword,
                     status,
-                    removal_reason
+                    removal_reason,
+                    landing_page_suggestion,
+                    ad_group_suggestion
                 ) VALUES (
                     :source,
                     :keyword_text,
@@ -136,7 +142,9 @@ final class SqliteKeywordStorage
                     :raw_payload,
                     :normalized_keyword,
                     :status,
-                    :removal_reason
+                    :removal_reason,
+                    :landing_page_suggestion,
+                    :ad_group_suggestion
                 )'
             );
 
@@ -157,6 +165,8 @@ final class SqliteKeywordStorage
                     ':normalized_keyword' => $processedRow->normalizedKeyword(),
                     ':status' => $processedRow->status(),
                     ':removal_reason' => $processedRow->removalReason(),
+                    ':landing_page_suggestion' => $processedRow->landingPageSuggestion(),
+                    ':ad_group_suggestion' => $processedRow->adGroupSuggestion(),
                 ]);
             }
 

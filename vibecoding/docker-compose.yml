@@ -8,8 +8,9 @@ services:
       && touch database/app.sqlite
       && chown -R www-data:www-data database app/runtime
       && php app/yii keyword/db-init
+      && php app/yii user/ensure
       && php app/yii keyword/import-samples
-      && php -S 0.0.0.0:${VIBECODING_PORT:-8080} -t app/public app/public/index.php"
+      && php -S 0.0.0.0:${VIBECODING_PORT:-8080} -t app/public app/public/router.php"
     environment:
       DB_DSN: ${DB_DSN:-sqlite:/app/database/app.sqlite}
       DB_USERNAME: ${DB_USERNAME:-}
@@ -17,6 +18,8 @@ services:
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       OPENROUTER_MODEL: ${OPENROUTER_MODEL:-openai/gpt-4.1-mini}
       VIBECODING_PORT: ${VIBECODING_PORT:-8080}
+      ADMIN_LOGIN: ${ADMIN_LOGIN:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
     ports:
       - "${VIBECODING_PORT:-8080}:${VIBECODING_PORT:-8080}"
     volumes:

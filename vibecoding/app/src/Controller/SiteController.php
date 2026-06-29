@@ -4,28 +4,36 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Yii;
 use yii\web\Response;
 
-final class SiteController extends WebController
+final class SiteController extends BaseController
 {
     public function actionIndex(): string
     {
-        $status = $this->runtime()->status(false);
-        $exportState = $status['export_exists'] ? 'ready' : 'not generated yet';
-        $aiState = $status['ai_mode'] === 'openrouter' ? 'OpenRouter key configured' : 'template fallback';
-        $body = '<p>Yii2 web runtime with SQLite-backed keyword import/export integration points.</p>';
-        $body .= '<table>';
-        $body .= '<tr><th>SQLite DSN</th><td>' . self::e((string) $status['database']) . '</td></tr>';
-        $body .= '<tr><th>Imported rows</th><td>' . (int) $status['keyword_import_rows'] . '</td></tr>';
-        $body .= '<tr><th>Google Ads export</th><td>' . self::e($exportState) . '</td></tr>';
-        $body .= '<tr><th>AI mode</th><td>' . self::e($aiState) . '</td></tr>';
-        $body .= '</table>';
+        $runtime = $this->runtime();
 
-        return $this->page('Vibecoding Keyword Runtime', $body);
+        return $this->render('index', [
+            'rowCount' => $runtime->storage()->rowCount(),
+            'groupCount' => count($runtime->groups()),
+            'exportExists' => is_file($runtime->exportPath()),
+            'isGuest' => Yii::$app->user->isGuest,
+            'adminLogin' => getenv('ADMIN_LOGIN') ?: 'admin',
+        ]);
     }
 
-    public function actionHealth(): Response
+    public function actionHealth(): array
     {
-        return $this->asJson($this->runtime()->status(false));
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $runtime = $this->runtime();
+
+        return [
+            'status' => 'ok',
+            'database' => $runtime->storage()::defaultDsn(),
+            'keyword_import_rows' => $runtime->storage()->rowCount(),
+            'active_groups' => count($runtime->groups()),
+            'export_exists' => is_file($runtime->exportPath()),
+            'ai_mode' => $runtime->hasOpenRouterKey() ? 'openrouter' : 'template-fallback',
+        ];
     }
 }
