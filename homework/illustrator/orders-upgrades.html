@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Orders Upgrades</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --text: #35363a;
+      --muted: #b1b3b8;
+      --blue: #3e8cff;
+      --line: #bfc0c2;
+      --black-pill: #202124;
+      --green-bg: #d5facb;
+      --green-text: #6db45f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #fff;
+      color: var(--text);
+      font-family: "Quicksand", "Trebuchet MS", Arial, sans-serif;
+      font-weight: 500;
+    }
+
+    .screen {
+      width: 1488px;
+      height: 782px;
+      position: relative;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .top-nav {
+      position: absolute;
+      left: 40px;
+      top: 38px;
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+      height: 58px;
+    }
+
+    .top-nav a,
+    .sub-nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 27px;
+      line-height: 32px;
+      font-weight: 500;
+      position: relative;
+      padding-bottom: 20px;
+    }
+
+    .top-nav a.active,
+    .sub-nav a.active {
+      color: var(--blue);
+    }
+
+    .top-nav a.active::after,
+    .sub-nav a.active::after {
+      content: "";
+      position: absolute;
+      left: -20px;
+      right: -20px;
+      height: 4px;
+      bottom: 0;
+      background: var(--blue);
+    }
+
+    .sub-nav {
+      position: absolute;
+      left: 40px;
+      top: 145px;
+      display: flex;
+      gap: 38px;
+      align-items: flex-start;
+      height: 54px;
+    }
+
+    .sub-nav a.active::after {
+      left: -20px;
+      right: -20px;
+    }
+
+    .filters {
+      position: absolute;
+      left: 44px;
+      top: 226px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      color: var(--text);
+      font-size: 22px;
+      line-height: 28px;
+      font-weight: 500;
+    }
+
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 24px;
+      height: 60px;
+      border-right: 3px solid var(--line);
+    }
+
+    .filter-item:first-child {
+      padding-left: 0;
+      padding-right: 23px;
+    }
+
+    .filter-item:last-child {
+      border-right: 0;
+      padding-right: 0;
+    }
+
+    .pill {
+      min-width: 32px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 17px;
+      background: var(--black-pill);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: .1px;
+    }
+
+    .orders-table {
+      position: absolute;
+      left: 19px;
+      top: 327px;
+      width: 1032px;
+      border: 3px solid var(--line);
+      border-radius: 7px 7px 0 0;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      table-layout: fixed;
+      font-size: 22px;
+      line-height: 27px;
+      color: var(--text);
+    }
+
+    .orders-table col:nth-child(1) { width: 106px; }
+    .orders-table col:nth-child(2) { width: 158px; }
+    .orders-table col:nth-child(3) { width: 156px; }
+    .orders-table col:nth-child(4) { width: 76px; }
+    .orders-table col:nth-child(5) { width: 130px; }
+    .orders-table col:nth-child(6) { width: 148px; }
+    .orders-table col:nth-child(7) { width: 258px; }
+
+    .orders-table th,
+    .orders-table td {
+      border-right: 3px solid var(--line);
+      border-bottom: 3px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+      background: #fff;
+      padding: 0 19px;
+      white-space: nowrap;
+    }
+
+    .orders-table th:last-child,
+    .orders-table td:last-child {
+      border-right: 0;
+    }
+
+    .orders-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .orders-table thead th {
+      height: 76px;
+      font-size: 21px;
+      font-weight: 500;
+      line-height: 27px;
+    }
+
+    .orders-table tbody td {
+      height: 81px;
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    .orders-table th:nth-child(4),
+    .orders-table td:nth-child(4) {
+      padding-left: 20px;
+      padding-right: 10px;
+    }
+
+    .orders-table th:nth-child(5),
+    .orders-table td:nth-child(5) {
+      padding-left: 18px;
+      padding-right: 10px;
+    }
+
+    .orders-table th:nth-child(7),
+    .orders-table td:nth-child(7) {
+      padding-left: 18px;
+      padding-right: 14px;
+    }
+
+    .badge-complete {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 29px;
+      padding: 0 10px;
+      border-radius: 5px;
+      background: var(--green-bg);
+      color: var(--green-text);
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 500;
+      text-transform: lowercase;
+    }
+
+    .invoice-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .invoice-search {
+      width: 78px;
+      height: 39px;
+      border: 1px solid #b9babd;
+      border-radius: 7px;
+      padding: 0 9px;
+      color: #a9abb0;
+      font: 500 18px/39px "Quicksand", "Trebuchet MS", Arial, sans-serif;
+      outline: none;
+    }
+
+    .search-icon {
+      width: 23px;
+      height: 23px;
+      stroke: #000;
+      stroke-width: 2.5;
+      fill: none;
+      flex: 0 0 auto;
+      margin-left: 2px;
+    }
+
+    .amount {
+      color: var(--text);
+      font-size: 22px;
+      line-height: 23px;
+      font-weight: 500;
+    }
+
+    .date-muted {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .old-price {
+      display: block;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 20px;
+      margin-top: 1px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <main class="screen">
+    <nav class="top-nav" aria-label="Main navigation">
+      <a href="#">Dashboard</a>
+      <a href="#" class="active">Orders</a>
+      <a href="#">Accounts</a>
+    </nav>
+
+    <nav class="sub-nav" aria-label="Orders navigation">
+      <a href="#">Hostings</a>
+      <a href="#">Websites</a>
+      <a href="#" class="active">Upgrades</a>
+      <a href="#">Domains</a>
+    </nav>
+
+    <section class="filters" aria-label="Order status filters">
+      <div class="filter-item">Free <span class="pill">0</span></div>
+      <div class="filter-item">Complete <span class="pill">473</span></div>
+      <div class="filter-item">Pending <span class="pill">58</span></div>
+      <div class="filter-item">Cancelled <span class="pill">19</span></div>
+      <div class="filter-item">Expired <span class="pill">59</span></div>
+    </section>
+
+    <table class="orders-table" aria-label="Orders table">
+      <colgroup>
+        <col><col><col><col><col><col><col>
+      </colgroup>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Order date</th>
+          <th>License</th>
+          <th>Qty</th>
+          <th>Status</th>
+          <th>Expires on</th>
+          <th>
+            <div class="invoice-head">
+              <span>Invoice</span>
+              <input class="invoice-search" value="2024-0" aria-label="Invoice search" />
+              <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="10.5" cy="10.5" r="6.1"></circle>
+                <path d="M15.2 15.2 21 21"></path>
+              </svg>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>111111</td>
+          <td>2024-09-17</td>
+          <td>domain 1</td>
+          <td>1</td>
+          <td><span class="badge-complete">complete</span></td>
+          <td>2025-09-17</td>
+          <td>
+            <span class="amount">$1.44 <span class="date-muted">(2024-09-17)</span></span>
+            <span class="old-price">$1.29</span>
+          </td>
+        </tr>
+        <tr>
+          <td>111112</td>
+          <td>2024-08-15</td>
+          <td>domain 2</td>
+          <td>1</td>
+          <td><span class="badge-complete">complete</span></td>
+          <td>2024-10-17</td>
+          <td>
+            <span class="amount">$1.44 <span class="date-muted">(2024-09-17)</span></span>
+            <span class="old-price">$1.29</span>
+          </td>
+        </tr>
+        <tr>
+          <td>111113</td>
+          <td>2024-09-17</td>
+          <td>domain 3</td>
+          <td>1</td>
+          <td><span class="badge-complete">complete</span></td>
+          <td>2024-10-17</td>
+          <td>
+            <span class="amount">$1.40 <span class="date-muted">(2024-09-17)</span></span>
+            <span class="old-price">$1.26</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

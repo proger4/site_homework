@@ -1,0 +1,73 @@
+# macOS / Windows
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# Editors and local tooling
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# Dependencies
+vendor/
+node_modules/
+php/vendor/
+php/websocket/node_modules/
+
+# Runtime, caches, logs
+runtime/
+var/
+tmp/
+temp/
+cache/
+logs/
+*.log
+php/runtime/
+php/app/protected/runtime/
+php/public/assets/*
+!php/public/assets/.gitignore
+
+# Local databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# JavaScript / frontend build output
+dist/
+build/
+coverage/
+.parcel-cache/
+.vite/
+
+# Generated project output
+vibecoding/generated/
+
+# Large media: keep videos out of Git
+*.avi
+*.flv
+*.m4v
+*.mkv
+*.mov
+*.mp4
+*.mpeg
+*.mpg
+*.webm
+*.wmv

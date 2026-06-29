@@ -1,0 +1,30 @@
+* text=auto
+
+*.css text
+*.html text
+*.js text
+*.json text
+*.md text
+*.php text
+*.py text
+*.sh text eol=lf
+*.yml text
+*.yaml text
+
+*.gif binary
+*.ico binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary
+
+*.avi binary
+*.flv binary
+*.m4v binary
+*.mkv binary
+*.mov binary
+*.mp4 binary
+*.mpeg binary
+*.mpg binary
+*.webm binary
+*.wmv binary
