@@ -1,0 +1,17 @@
+### Public page
+GET http://localhost:8080/
+
+### Post comment
+POST http://localhost:8080/comment/create
+Content-Type: application/x-www-form-urlencoded
+
+Comment[name]=Smoke&Comment[message]=Hello from smoke test
+
+### Admin login
+POST http://localhost:8080/admin/login
+Content-Type: application/x-www-form-urlencoded
+
+LoginForm[username]=admin&LoginForm[password]=admin123
+
+### Admin comments
+GET http://localhost:8080/admin/comments

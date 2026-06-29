@@ -1,0 +1,47 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    command: >
+      sh -lc "mkdir -p database runtime public/assets
+      && touch database/app.sqlite
+      && chown -R www-data:www-data database runtime public/assets
+      && php app/protected/yiic migrate --interactive=0
+      && php app/protected/yiic adminuser ensure
+      && php app/protected/yiic seed
+      && php-fpm"
+    environment:
+      DB_DSN: ${DB_DSN:-sqlite:/var/www/html/database/app.sqlite}
+      DB_USERNAME: ${DB_USERNAME:-}
+      DB_PASSWORD: ${DB_PASSWORD:-}
+      ADMIN_LOGIN: ${ADMIN_LOGIN:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      WS_PUBLIC_HOST: ${WS_PUBLIC_HOST:-localhost}
+      WS_INTERNAL_HOST: ${WS_INTERNAL_HOST:-ws}
+      WS_PORT: ${WS_PORT:-3001}
+    volumes:
+      - ./database:/var/www/html/database
+      - ./runtime:/var/www/html/runtime
+      - ./public/assets:/var/www/html/public/assets
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./public:/var/www/html/public:ro
+    depends_on:
+      - php
+
+  ws:
+    image: node:20-alpine
+    working_dir: /app
+    command: node server.js
+    environment:
+      WS_PORT: ${WS_PORT:-3001}
+    ports:
+      - "${WS_PORT:-3001}:${WS_PORT:-3001}"
+    volumes:
+      - ./websocket:/app:ro

@@ -1,0 +1,8 @@
+.git
+.idea
+vendor
+database/*.sqlite
+database/*.sqlite-journal
+runtime
+tmp
+homework_aspects
