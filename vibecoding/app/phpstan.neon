@@ -3,6 +3,8 @@ parameters:
     paths:
         - src
         - tests
+    stubFiles:
+        - phpstan-yii.stub
     parallel:
         maximumNumberOfProcesses: 1
     tmpDir: var/phpstan

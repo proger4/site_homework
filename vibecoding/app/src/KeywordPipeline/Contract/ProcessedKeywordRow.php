@@ -11,24 +11,35 @@ final class ProcessedKeywordRow
     public const STATUS_ACTIVE = 'active';
     public const STATUS_EXCLUDED = 'excluded';
     public const STATUS_MERGED_DUPLICATE = 'merged_duplicate';
+    public const STATUS_REVIEW = 'review_suggestion';
 
     private NormalizedKeywordRow $normalizedRow;
     private string $status;
     private ?string $removalReason;
+    private ?string $landingPageSuggestion;
+    private ?string $adGroupSuggestion;
 
     public function __construct(
         NormalizedKeywordRow $normalizedRow,
         string $status,
-        ?string $removalReason = null
+        ?string $removalReason = null,
+        ?string $landingPageSuggestion = null,
+        ?string $adGroupSuggestion = null
     ) {
         $this->normalizedRow = $normalizedRow;
         $this->status = $status;
         $this->removalReason = $removalReason;
+        $this->landingPageSuggestion = $landingPageSuggestion;
+        $this->adGroupSuggestion = $adGroupSuggestion;
     }
 
-    public static function active(NormalizedKeywordRow $row): self
+    public static function active(
+        NormalizedKeywordRow $row,
+        ?string $landingPageSuggestion = null,
+        ?string $adGroupSuggestion = null
+    ): self
     {
-        return new self($row, self::STATUS_ACTIVE);
+        return new self($row, self::STATUS_ACTIVE, null, $landingPageSuggestion, $adGroupSuggestion);
     }
 
     public static function excluded(NormalizedKeywordRow $row, string $reason): self
@@ -39,6 +50,16 @@ final class ProcessedKeywordRow
     public static function mergedDuplicate(NormalizedKeywordRow $row): self
     {
         return new self($row, self::STATUS_MERGED_DUPLICATE, 'duplicate_keyword');
+    }
+
+    public static function review(
+        NormalizedKeywordRow $row,
+        string $reason,
+        ?string $landingPageSuggestion = null,
+        ?string $adGroupSuggestion = null
+    ): self
+    {
+        return new self($row, self::STATUS_REVIEW, $reason, $landingPageSuggestion, $adGroupSuggestion);
     }
 
     public function normalizedRow(): NormalizedKeywordRow
@@ -66,8 +87,18 @@ final class ProcessedKeywordRow
         return $this->removalReason;
     }
 
+    public function landingPageSuggestion(): ?string
+    {
+        return $this->landingPageSuggestion;
+    }
+
+    public function adGroupSuggestion(): ?string
+    {
+        return $this->adGroupSuggestion;
+    }
+
     public function isActive(): bool
     {
-        return $this->status === self::STATUS_ACTIVE;
+        return $this->status === self::STATUS_ACTIVE || $this->status === self::STATUS_REVIEW;
     }
 }
