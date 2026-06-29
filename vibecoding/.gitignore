@@ -1,0 +1,14 @@
+generated/
+.env
+.env.local
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+app/vendor/
+app/runtime/
+database/
+/app/.phpunit.result.cache

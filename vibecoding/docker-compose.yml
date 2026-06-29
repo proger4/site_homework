@@ -1,0 +1,24 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    command: >
+      sh -lc "mkdir -p database app/runtime/export app/runtime/tmp
+      && touch database/app.sqlite
+      && chown -R www-data:www-data database app/runtime
+      && php app/yii keyword/db-init
+      && php app/yii keyword/import-samples
+      && php -S 0.0.0.0:${VIBECODING_PORT:-8080} -t app/public app/public/index.php"
+    environment:
+      DB_DSN: ${DB_DSN:-sqlite:/app/database/app.sqlite}
+      DB_USERNAME: ${DB_USERNAME:-}
+      DB_PASSWORD: ${DB_PASSWORD:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-openai/gpt-4.1-mini}
+      VIBECODING_PORT: ${VIBECODING_PORT:-8080}
+    ports:
+      - "${VIBECODING_PORT:-8080}:${VIBECODING_PORT:-8080}"
+    volumes:
+      - ./database:/app/database
+      - ./app/runtime:/app/app/runtime

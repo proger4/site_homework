@@ -1,0 +1,16 @@
+[
+  {
+    "query": "ai website builder",
+    "language": "en",
+    "volume": 1600,
+    "cpc": 1.8,
+    "target_url": "https://site.pro/AI-Website-Builder/"
+  },
+  {
+    "query": "svetainiu kurimas",
+    "language": "lt",
+    "volume": 300,
+    "cpc": 0.9,
+    "target_url": "https://site.pro/lt/"
+  }
+]

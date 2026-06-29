@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @property CDbConnection $db
+ * @property CErrorHandler $errorHandler
+ * @property CHttpRequest $request
+ * @property CWebUser $user
+ * @property UserRepository $userRepository
+ * @property WebSocketNotifier $webSocketNotifier
+ */
+class CApplication
+{
+}
